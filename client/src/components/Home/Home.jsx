@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Question from '../Question';
 import VotingArea from '../VotingArea';
 import Flag from 'react-flags';
 
@@ -62,18 +61,19 @@ const ContentInner = styled.div`
 export default class Home extends Component {
   state = {
     questions: [],
-    selectedLanguageId: 'en'
+    selectedLanguageId: 'en',
+    currentQuestionIdx: 0
   };
 
   LANGUAGES = [{
       identifier: 'en',
-      imgPath: '/flags/flags-iso/shiny/64/GB.png'
+      imgPath: '/GB-flat.png'
     }, {
       identifier: 'de',
-      imgPath: '/flags/flags-iso/shiny/64/DE.png'
+      imgPath: '/DE-flat.png'
     }, {
       identifier: 'cn',
-      imgPath: '/flags/flags-iso/shiny/64/CN.png'
+      imgPath: '/CN-flat.png'
     },
   ];
 
@@ -82,32 +82,42 @@ export default class Home extends Component {
   };
 
   fetchQuestions = () => {
+    //fetch(`https://jsonplaceholder.typicode.com/todos/${result}`)
+      //.then(function(response) {
+        //return response.json();
+      //})
+      //.then(function(myJson) {
+        //console.log(JSON.stringify(myJson));
+      //});
+
     const dummyJson = [{
-        'id': 1,
-        'translations': {
+      'id': 1,
+        'hits': [0, 1],
+        'langs': {
           'en': {
             'question': 'Is A or B true?',
-            'firstAnswer': 'It\'s A',
-            'secondAnswer': 'It\'s B'
+            'answers': ['It\'s A', 'It\'s B']
           },
           'de': {
             'question': 'Ist A oder B wahr?',
-            'firstAnswer': 'Es ist A',
-            'secondAnswer': 'Es ist B'
+            'answers': ['Es ist A', 'Es ist B']
           },
         }
       }, {
         'id': 2,
-        'translations': {
+        'hits': [10, 1],
+        'langs': {
           'en': {
             'question': 'Marshmellos or Haribo Cola?',
-            'firstAnswer': 'Marshmellos',
-            'secondAnswer': 'Haribo Cola'
+            'answers': ['Marshmellos', 'Haribo Cola']
           },
           'de': {
             'question': 'Marshmellos oder Haribo Cola?',
-            'firstAnswer': 'Marshmellos',
-            'secondAnswer': 'Haribo Cola'
+            'answers': ['Marshmellos', 'Haribo Cola']
+          },
+          'cn': {
+            'question': 'Marshmellos还是Haribo Cola？',
+            'answers': ['Marshmellos', 'Haribo Cola']
           },
         }
       },
@@ -116,7 +126,23 @@ export default class Home extends Component {
   }
 
   handleVote = result => {
-    console.log(result);
+    // Notify server about vote that was casted.
+    fetch(`https://jsonplaceholder.typicode.com/todos/${result}`)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(JSON.stringify(myJson));
+      });
+
+    let { selectedLanguageId } = this.state;
+    const currentQuestionIdx = (this.state.currentQuestionIdx + 1) % this.state.questions.length;
+    if (!(selectedLanguageId in this.state.questions[currentQuestionIdx].langs)) {
+      // TODO: Probably better to pick first key from langs.
+      selectedLanguageId = 'en';
+    }
+
+    this.setState({ ...this.state, currentQuestionIdx, selectedLanguageId });
   };
 
   handleLanguageSwitch = langId => {
@@ -124,12 +150,12 @@ export default class Home extends Component {
   };
 
   render() {
-    const { questions, selectedLanguageId } = this.state;
-
+    const { questions, selectedLanguageId, currentQuestionIdx } = this.state;
     if (questions.length === 0) {
-      // TODO: Replace with appropriate loading screen.
       return <div></div>;
     }
+    const currentQuestion = questions[currentQuestionIdx];
+    console.log()
 
     return (
       <Wrapper>
@@ -137,15 +163,17 @@ export default class Home extends Component {
           <KITLogo src='/kit_logo.png' />
           <BrandName>OtterOrakel9000</BrandName>
           <FlagContainer>
-            { this.LANGUAGES.map(l =>
-              <FlagImg src={l.imgPath} onClick={this.handleLanguageSwitch.bind(this, l.identifier)} />
+            { this.LANGUAGES.map(l => {
+              if (l.identifier in currentQuestion.langs) {
+                return <FlagImg key={l.identifier} src={l.imgPath} onClick={this.handleLanguageSwitch.bind(this, l.identifier)} />
+              }
+            }
             )}
           </FlagContainer>
         </Header>
         <ContentWrapper>
           <ContentInner>
-            <Question lang={selectedLanguageId} data={questions[0]}/>
-            <VotingArea lang={selectedLanguageId} question={questions[0]} onVote={this.handleVote} />
+            <VotingArea lang={selectedLanguageId} question={currentQuestion} onVote={this.handleVote} />
           </ContentInner>
         </ContentWrapper>
       </Wrapper>
