@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Question from '../Question';
 
 const Container = styled.div`
   margin-top: 4rem;
@@ -67,19 +68,12 @@ export default class VotingArea extends Component {
     }, durationInMs);
   };
 
-  submitVote = () => {
-    // TODO: fetch(...)
-    // Better: have onVote callback with result
-  }
-
   handleFirstAnswerClick = event => {
-    // TODO: Handle vote
     this.showThankYouNote();
     this.props.onVote(0);
   };
 
   handleSecondAnswerClick = event => {
-    // TODO: Handle vote
     this.showThankYouNote();
     this.props.onVote(1);
   };
@@ -89,18 +83,23 @@ export default class VotingArea extends Component {
     const { question, lang } = this.props;
 
     return (
-      <Container>
-        { showThankYou ? 
-          <ThankYouContainer hidden={!showThankYou}>
-            { this.thankYouTranslations.en } 🎉🤗😍
-          </ThankYouContainer>
-        :
-          <VotingOptions hidden={showThankYou}>
-            <Vote onClick={this.handleFirstAnswerClick}>{ question.translations[lang].firstAnswer }</Vote>
-            <Vote onClick={this.handleSecondAnswerClick}>{ question.translations[lang].secondAnswer }</Vote>
-          </VotingOptions>
+      <div>
+        { !showThankYou && 
+          <Question lang={lang} data={question}/>
         }
-      </Container>
+        <Container>
+          { showThankYou ? 
+            <ThankYouContainer>
+              { this.thankYouTranslations.en } 🎉🤗😍
+            </ThankYouContainer>
+          :
+            <VotingOptions>
+              <Vote onClick={this.handleFirstAnswerClick}>{ question.langs[lang].answers[0] }</Vote>
+              <Vote onClick={this.handleSecondAnswerClick}>{ question.langs[lang].answers[1] }</Vote>
+            </VotingOptions>
+          }
+        </Container>
+      </div>
     )
   }
 }
