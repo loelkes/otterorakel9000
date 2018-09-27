@@ -18,7 +18,7 @@ export default class Question extends Component {
 
     return (
       <Wrapper>
-        { data.translations[lang].question }
+        { data.langs[lang].question }
       </Wrapper>
     )
   }
