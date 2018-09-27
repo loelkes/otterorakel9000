@@ -4,6 +4,7 @@ import pickle
 class Questions:
     def __init__(self):
         self.load()
+        self.langs = ['en', 'de', 'cn']
 
     def load(self, file='database.pickle'):
         try:
@@ -38,17 +39,22 @@ class Questions:
         except IndexError:
             pass
 
-    def update(self, id=None, lang=None, question=None, answers=None):
+    def update(self, id=None, lang='en', text=None, answers=None):
         """Update question in the database."""
-        if lang and question and isinstance(answers, list):
-            entry = {'langs': {'en': {'question': question, 'answers': answers}}}
-            try:
-                self.db[id].update(entry)
-            except IndexError:
-                entry.update({'hits': [0]*2})
-                self.db.append(entry)
-            print(entry)
-            self.save()
+        question = {'question': text, 'answers': answers}
+        if 0 <= int(id) < len(self.db) and lang in self.langs:
+            # Element is in the database, language is supported
+            element = self.db[int(id)]['langs']
+            if lang in element:
+                element[lang].update(question)
+            else:
+                element.update({lang: question})
+        else:
+            # New entry
+            entry = {'langs': {lang: question}}
+            entry.update({'hits': [0]*2})
+            self.db.append(entry)
+        self.save()
 
     def answer(self, id, lang, choice):
         self.db[int(id)]['hits'][int(choice)] += 1
