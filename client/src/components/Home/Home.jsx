@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import VotingArea from '../VotingArea';
-import Flag from 'react-flags';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -81,61 +80,57 @@ export default class Home extends Component {
     this.fetchQuestions();
   };
 
-  fetchQuestions = () => {
-    //fetch(`https://jsonplaceholder.typicode.com/todos/${result}`)
-      //.then(function(response) {
-        //return response.json();
-      //})
-      //.then(function(myJson) {
-        //console.log(JSON.stringify(myJson));
-      //});
+  fetchQuestions = async () => {
+    //fetch('https://obelix.zkm.de/question/0', {'mode': 'no-cors'})
+    const response = await fetch('https://obelix.zkm.de/question/marshmello');
+    const json = await response.json();
+    console.log(JSON.stringify(json));
+    this.setState({ questions: json });
 
-    const dummyJson = [{
-      'id': 1,
-        'hits': [0, 1],
-        'langs': {
-          'en': {
-            'question': 'Is A or B true?',
-            'answers': ['It\'s A', 'It\'s B']
-          },
-          'de': {
-            'question': 'Ist A oder B wahr?',
-            'answers': ['Es ist A', 'Es ist B']
-          },
-        }
-      }, {
-        'id': 2,
-        'hits': [10, 1],
-        'langs': {
-          'en': {
-            'question': 'Marshmellos or Haribo Cola?',
-            'answers': ['Marshmellos', 'Haribo Cola']
-          },
-          'de': {
-            'question': 'Marshmellos oder Haribo Cola?',
-            'answers': ['Marshmellos', 'Haribo Cola']
-          },
-          'cn': {
-            'question': 'Marshmellos还是Haribo Cola？',
-            'answers': ['Marshmellos', 'Haribo Cola']
-          },
-        }
-      },
-    ];
-    this.setState({ questions: dummyJson });
+    //const dummyJson = [{
+      //'id': 1,
+        //'hits': [0, 1],
+        //'langs': {
+          //'en': {
+            //'question': 'Is A or B true?',
+            //'answers': ['It\'s A', 'It\'s B']
+          //},
+          //'de': {
+            //'question': 'Ist A oder B wahr?',
+            //'answers': ['Es ist A', 'Es ist B']
+          //},
+        //}
+      //}, {
+        //'id': 2,
+        //'hits': [10, 1],
+        //'langs': {
+          //'en': {
+            //'question': 'Marshmellos or Haribo Cola?',
+            //'answers': ['Marshmellos', 'Haribo Cola']
+          //},
+          //'de': {
+            //'question': 'Marshmellos oder Haribo Cola?',
+            //'answers': ['Marshmellos', 'Haribo Cola']
+          //},
+          //'cn': {
+            //'question': 'Marshmellos还是Haribo Cola？',
+            //'answers': ['Marshmellos', 'Haribo Cola']
+          //},
+        //}
+      //},
+    //];
+    //this.setState({ questions: dummyJson });
   }
 
-  handleVote = result => {
-    // Notify server about vote that was casted.
-    fetch(`https://jsonplaceholder.typicode.com/todos/${result}`)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(myJson) {
-        console.log(JSON.stringify(myJson));
-      });
-
+  handleVote = (question, result) => {
     let { selectedLanguageId } = this.state;
+    // Notify server about vote that was casted.
+    fetch(`https://obelix.zkm.de/answer/${question.id}/${selectedLanguageId}/${result}`)
+      .then(function(response) {
+        console.log(response);
+        return true;
+      })
+
     const currentQuestionIdx = (this.state.currentQuestionIdx + 1) % this.state.questions.length;
     if (!(selectedLanguageId in this.state.questions[currentQuestionIdx].langs)) {
       // TODO: Probably better to pick first key from langs.
