@@ -9,9 +9,13 @@ import lorem
 def index():
     return lorem.text()
 
-@app.route('/question')
-def question():
-    return jsonify(questions.getRandom())
+@app.route('/question/')
+@app.route('/question/<id>')
+def question(id=0):
+    if int(id) > 0:
+        return jsonify(questions.db)
+    else:
+        return jsonify(questions.getRandom())
 
 @app.route('/add', methods=['POST'])
 def addQ():
@@ -28,7 +32,7 @@ def delete(id):
 @app.route('/answer/<id>/<lang>/<choice>')
 def answer(id, lang, choice):
     questions.answer(int(id), lang, int(choice))
-    return redirect(url_for('question'))
+    return jsonify({'status': True})
 
 @app.route('/stats')
 def stats():
