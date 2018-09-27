@@ -9,8 +9,8 @@ from questions import Questions
 
 app = Flask(__name__)
 app.config.from_object(FlaskConfig)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
 
 questions = Questions()
 

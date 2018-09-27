@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block app_content %}
+<h1>Questions</h1><hr />
+<table class="table table-striped table-condensed">
+  <thead>
+    <td>ID</td>
+    <td>Stats</td>
+    <td>Question</td>
+  </thead>
+  <tbody>
+    {% for question in questions %}
+        <tr>
+          <td>{{loop.index0}}</td>
+          <td>{{question.hits}}</td>
+          <td>
+            <table class="table">
+              <thead>
+                <td>Lang</td>
+                <td>Text</td>
+                <td>Answers</td>
+              </thead>
+              {% for lang, content in question.langs.items() %}
+              <tr>
+                <td><span class="label label-success">{{lang}}</span></td>
+                <td>{{content.question}}</td>
+                <td>{% for answer in content.answers %}{{answer}} {% endfor %}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </td>
+          <td><a href="delete/{{loop.index0}}"><button type="button" class="btn btn-danger">Delete</button></a>
+</td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h1>Add question</h1>
+
+{{ wtf.quick_form(form, action='add') }}
+
+{% endblock %}

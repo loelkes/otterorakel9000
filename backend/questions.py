@@ -1,33 +1,49 @@
 import random
+import pickle
 
 class Questions:
     def __init__(self):
-        pass
-        self.id = 0
-        self.db = [
-            {'question': 'Schnitzel oder Salat?', 'answers': ['Schnitzel', 'Salat']},
-            {'question': 'Aufzug oder Treppe?', 'answers': ['Aufzug', 'Treppe']},
-            {'question': 'Fühlst du dich Gesund', 'answers': ['Ja', 'Nein']},
-            {'question': 'Gibt es genug Sportkurse am KIT?', 'answers': ['Ja', 'Nein']}
-        ]
+        self.load()
+
+    def load(self, file='database.pickle'):
+        try:
+            self.db = pickle.load(open(file, 'rb'))
+            print('Loaded database from file!')
+        except:
+            self.db = []
+            print('Database file not found. Working with new database!')
+
+    def save(self, file='database.pickle'):
+        pickle.dump(self.db, open(file, 'wb'))
 
     def getRandom(self):
         """Get a random question from the database."""
-        return random.choice(self.db)
+        id = random.randint(0, len(self.db)-1)
+        q = {'id': id, 'langs': self.db[id]}
+        return q
 
-    def add(self):
-        """Add question to the database."""
-        pass
+    def delete(self, id=None):
+        try:
+            self.db.pop(id)
+            self.save()
+        except IndexError:
+            pass
 
-    def delete(self):
-        """Delete question from database."""
-        pass
-
-    def update(self):
+    def update(self, id=None, lang=None, question=None, answers=None):
         """Update question in the database."""
-        pass
+        if lang and question and isinstance(answers, list):
+            entry = {'langs': {'en': {'question': question, 'answers': answers}}}
+            try:
+                self.db[id].update(entry)
+            except IndexError:
+                entry.update({'hits': [0]*2})
+                self.db.append(entry)
+            self.save()
+
+    def answer(self, id, lang, choice):
+        self.db[int(id)]['hits'][int(choice)] += 1
+
 
 # For manual testing...
 if __name__ == '__main__':
-    questions = Questions()
-    print(questions.getRandom())
+    q = Questions()
