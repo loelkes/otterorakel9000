@@ -45,6 +45,7 @@ const YesVote = styled(Vote)`
 `;
 
 const ThankYouContainer = styled.div`
+  text-align: center;
   font-size: 5rem;
   color: #fafafa;
   font-weight: 700;
@@ -70,12 +71,12 @@ export default class VotingArea extends Component {
 
   handleFirstAnswerClick = event => {
     this.showThankYouNote();
-    this.props.onVote(0);
+    this.props.onVote(this.props.question, 0);
   };
 
   handleSecondAnswerClick = event => {
     this.showThankYouNote();
-    this.props.onVote(1);
+    this.props.onVote(this.props.question, 1);
   };
 
   render() {
@@ -90,7 +91,8 @@ export default class VotingArea extends Component {
         <Container>
           { showThankYou ? 
             <ThankYouContainer>
-              { this.thankYouTranslations.en } 🎉🤗😍
+              🎉🤗😍<br />
+              { this.thankYouTranslations.en } 
             </ThankYouContainer>
           :
             <VotingOptions>
