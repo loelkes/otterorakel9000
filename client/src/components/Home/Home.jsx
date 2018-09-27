@@ -93,7 +93,7 @@ export default class Home extends Component {
   };
 
   fetchQuestions = async () => {
-    const response = await fetch('https://obelix.zkm.de/question/marshmello');
+    const response = await fetch('http://server.loelkes.com/question/marshmello');
     const json = await response.json();
     console.log(JSON.stringify(json));
     this.setState({ questions: json });
@@ -102,7 +102,7 @@ export default class Home extends Component {
   handleVote = (question, result) => {
     let { selectedLanguageId } = this.state;
     // Notify server about vote that was casted.
-    fetch(`https://obelix.zkm.de/answer/${question.id}/${selectedLanguageId}/${result}`)
+    fetch(`http://server.loelkes.com/answer/${question.id}/${selectedLanguageId}/${result}`)
       .then(function(response) {
         console.log(response);
         return true;

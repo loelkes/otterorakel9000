@@ -75,7 +75,7 @@ export default class DashboardPage extends Component {
   };
 
   populateStats = async () => {
-    const response = await fetch('https://obelix.zkm.de/question/marshmello');
+    const response = await fetch('http://server.loelkes.com/question/marshmello');
     const json = await response.json();
 
     const data = json.map(q => {
