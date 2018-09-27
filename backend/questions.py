@@ -19,7 +19,8 @@ class Questions:
     def getRandom(self):
         """Get a random question from the database."""
         id = random.randint(0, len(self.db)-1)
-        q = {'id': id, 'langs': self.db[id]}
+        q = {'id': id}
+        q.update(self.db[id])
         return q
 
     def delete(self, id=None):
@@ -38,6 +39,7 @@ class Questions:
             except IndexError:
                 entry.update({'hits': [0]*2})
                 self.db.append(entry)
+            print(entry)
             self.save()
 
     def answer(self, id, lang, choice):
