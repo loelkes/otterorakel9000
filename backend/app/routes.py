@@ -11,10 +11,17 @@ def index():
 
 @app.route('/question/')
 @app.route('/question/<id>')
-def question(id=0):
-    if int(id) > 0:
-        return jsonify(questions.db)
-    else:
+def question(id=None):
+    try:
+        id = int(id)
+        if id >= 0 and id < len(questions.db):
+            return jsonify(questions.db[int(id)])
+        else:
+            return jsonify(questions.getAll())
+    except ValueError:
+        id = 'all'
+        return jsonify(questions.getAll())
+    except TypeError:
         return jsonify(questions.getRandom())
 
 @app.route('/add', methods=['POST'])

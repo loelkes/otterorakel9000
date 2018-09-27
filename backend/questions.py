@@ -23,6 +23,14 @@ class Questions:
         q.update(self.db[id])
         return q
 
+    def getAll(self):
+        """Return all questions with ids"""
+        output = []
+        for id, question in enumerate(self.db):
+            question.update({'id': id})
+            output.append(question)
+        return output
+
     def delete(self, id=None):
         try:
             self.db.pop(id)
