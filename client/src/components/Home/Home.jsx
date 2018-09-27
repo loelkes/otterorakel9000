@@ -5,16 +5,21 @@ import VotingArea from '../VotingArea';
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: #b71c1c;
+  //background-color: #b71c1c;
+  background-image: url('/bg.jpg');
+  background-size: cover;
 `;
 
 const KITLogo = styled.img`
   width: 150px;
+  margin-right: 100px;
 `;
 
 const FlagContainer = styled.div`
+  min-width: 250px;
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
 `;
 
 const FlagImg = styled.img`
@@ -41,6 +46,14 @@ const BrandName = styled.h1`
   font-size: 3rem;
 `;
 
+const BrandLogo = styled.div`
+  margin-top: 2rem;
+  width: 150px;
+  height: 150px;
+  background-image: url('/otter-logo.png');
+  background-size: contain;
+`;
+
 const ContentWrapper = styled.main`
   display: flex;
   flex-direction: column;
@@ -55,7 +68,6 @@ const ContentInner = styled.div`
   margin-bottom: 3rem;
   min-height: 500px;
 `;
-
 
 export default class Home extends Component {
   state = {
@@ -81,45 +93,10 @@ export default class Home extends Component {
   };
 
   fetchQuestions = async () => {
-    //fetch('https://obelix.zkm.de/question/0', {'mode': 'no-cors'})
     const response = await fetch('https://obelix.zkm.de/question/marshmello');
     const json = await response.json();
     console.log(JSON.stringify(json));
     this.setState({ questions: json });
-
-    //const dummyJson = [{
-      //'id': 1,
-        //'hits': [0, 1],
-        //'langs': {
-          //'en': {
-            //'question': 'Is A or B true?',
-            //'answers': ['It\'s A', 'It\'s B']
-          //},
-          //'de': {
-            //'question': 'Ist A oder B wahr?',
-            //'answers': ['Es ist A', 'Es ist B']
-          //},
-        //}
-      //}, {
-        //'id': 2,
-        //'hits': [10, 1],
-        //'langs': {
-          //'en': {
-            //'question': 'Marshmellos or Haribo Cola?',
-            //'answers': ['Marshmellos', 'Haribo Cola']
-          //},
-          //'de': {
-            //'question': 'Marshmellos oder Haribo Cola?',
-            //'answers': ['Marshmellos', 'Haribo Cola']
-          //},
-          //'cn': {
-            //'question': 'Marshmellos还是Haribo Cola？',
-            //'answers': ['Marshmellos', 'Haribo Cola']
-          //},
-        //}
-      //},
-    //];
-    //this.setState({ questions: dummyJson });
   }
 
   handleVote = (question, result) => {
@@ -156,7 +133,7 @@ export default class Home extends Component {
       <Wrapper>
         <Header>
           <KITLogo src='/kit_logo.png' />
-          <BrandName>OtterOrakel9000</BrandName>
+          <BrandLogo />
           <FlagContainer>
             { this.LANGUAGES.map(l => {
               if (l.identifier in currentQuestion.langs) {
