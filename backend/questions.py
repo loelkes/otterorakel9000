@@ -8,14 +8,16 @@ class Questions:
         self.langs = ['en', 'de', 'cn']
 
     def load(self, file='database.pickle'):
+        """Load database from pickle file. Creaty empty DB if no file found"""
         try:
+            # Load from file.
             self.db = pickle.load(open(file, 'rb'))
-            print('Loaded database from file!')
         except:
+            # Loading failed, create empty database.
             self.db = []
-            print('Database file not found. Working with new database!')
 
     def save(self, file='database.pickle'):
+        """Save the current database to a pickle file."""
         pickle.dump(self.db, open(file, 'wb'))
 
     def getRandom(self):
@@ -34,6 +36,7 @@ class Questions:
         return output
 
     def delete(self, id=None):
+        """Delete a question from the database and save it to the file."""
         try:
             self.db.pop(id)
             self.save()
@@ -47,20 +50,19 @@ class Questions:
             # Element is in the database, language is supported
             element = self.db[int(id)]['langs']
             if lang in element:
+                # Update element if language is present
                 element[lang].update(question)
             else:
+                # Create new element if language not found.
                 element.update({lang: question})
         else:
             # New entry
             entry = {'langs': {lang: question}}
             entry.update({'hits': [[],[]]})
             self.db.append(entry)
+        # Save the database.
         self.save()
 
     def answer(self, id, lang, choice):
+        # Enter an answer in the database with the current timestamp.
         self.db[int(id)]['hits'][int(choice)].append(time.time())
-
-
-# For manual testing...
-if __name__ == '__main__':
-    q = Questions()

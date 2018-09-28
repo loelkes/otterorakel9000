@@ -28,7 +28,9 @@ def question(id=None):
 def addQ():
     form = AddQuestion()
     if form.validate_on_submit():
-        questions.update(form.id.data,form.language.data,form.question.data,[form.answer1.data,form.answer2.data])
+        questions.update(
+            form.id.data, form.language.data, form.question.data,
+            [form.answer1.data, form.answer2.data])
     return redirect(url_for('overview'))
 
 @app.route('/delete/<id>')
@@ -39,13 +41,11 @@ def delete(id):
 @app.route('/answer/<id>/<lang>/<choice>')
 def answer(id, lang, choice):
     questions.answer(int(id), lang, int(choice))
+    # TODO: Check if failed and return status.
     return jsonify({'status': True})
 
 @app.route('/overview')
 def overview():
     form = AddQuestion()
-    return render_template('overview.html', questions=questions.db, form=form)
-
-@app.route('/statistics')
-def statistics():
-    return render_template('statistics.html', db=questions.db)
+    return render_template(
+        'overview.html', questions = questions.db, form = form)
