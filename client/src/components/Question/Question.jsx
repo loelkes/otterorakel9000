@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  font-size: 6rem;
+  font-size: 4rem;
   font-weight: 900;
   color: #fafafa;
 `;
