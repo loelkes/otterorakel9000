@@ -1,5 +1,6 @@
 import random
 import pickle
+import time
 
 class Questions:
     def __init__(self):
@@ -52,12 +53,12 @@ class Questions:
         else:
             # New entry
             entry = {'langs': {lang: question}}
-            entry.update({'hits': [0]*2})
+            entry.update({'hits': [[],[]]})
             self.db.append(entry)
         self.save()
 
     def answer(self, id, lang, choice):
-        self.db[int(id)]['hits'][int(choice)] += 1
+        self.db[int(id)]['hits'][int(choice)].append(time.time())
 
 
 # For manual testing...
