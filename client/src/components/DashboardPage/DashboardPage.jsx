@@ -77,13 +77,14 @@ export default class DashboardPage extends Component {
   populateStats = async () => {
     const response = await fetch('http://server.loelkes.com/question/marshmello');
     const json = await response.json();
+    console.log(json[0].hits.map(h => h.length));
 
     const data = json.map(q => {
       return {
         chartData: {
           labels: q.langs['en'].answers,
           datasets: [{
-            data: q.hits,
+            data: q.hits.map(h => h.length),
             backgroundColor: [
               '#FF6384',
               '#36A2EB',
@@ -113,6 +114,7 @@ export default class DashboardPage extends Component {
       fullWidth: true,
     };
 
+    console.log(data);
     return (
       <Wrapper>
         <Header>
@@ -123,7 +125,7 @@ export default class DashboardPage extends Component {
             <QuestionStatistic key={d.question.id}>
               <QuestionTitle title={d.question.langs['en'].question}>{ d.question.langs['en'].question }
               </QuestionTitle>
-              { d.question.hits.reduce((a, b) => a + b, 0) > 0 ? 
+              { d.chartData.datasets[0].data.reduce((a, b) => a + b, 0) > 0 ? 
                 <DoughnutChartContainer>
                   <DoughnutChart
                     data={d.chartData}
