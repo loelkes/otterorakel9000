@@ -7,16 +7,23 @@ What does this do?
 
 ## Interface
 
+Howto add, remove, change, or get questions from the database
+
+The overview with an HTML-Interface can be found at ```/overview``.
+
 ### Questions
 * ```/question``` gives one random question
 * ```/question/<id>``` gives the question with id set in ```<id>```
+ * Leaving ```id``` empty returns a random question
+ * If ```id``` points to a question in the database, this question element will be returned
+ * Everything else returns all questions of the database.
 
-Each question is delivered as JSON:
+Structure of a question element:
 ```
 {
   "hits": [
-    0,
-    0
+    [],
+    []
   ],
   "id": 1,
   "langs": {
@@ -30,6 +37,16 @@ Each question is delivered as JSON:
   }
 }
 ```
+Each time a question is answered, the unix timestamp of that omment is added to the list of hits.
+#### Add / update a question
+
+TBD
+
+#### Delete a question
+
+```
+/delete/<id>
+```
 
 ### Answer
 
@@ -37,16 +54,9 @@ Each question is delivered as JSON:
 /answer/<id>/<lang>/<choice>
 ```
 
-#### Example
-Perfom a request with
+This returns a JSON with either true or false as status. At this time, the language parameter is ignored for statistics.
 ```
-/answer/1/en/1
-```
-and the server will return
-```
-{
-  "status": true
-}
+{'status': true}
 ```
 ## Requirements
 * python3, pip
