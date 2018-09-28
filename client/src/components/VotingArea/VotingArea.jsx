@@ -62,7 +62,7 @@ export default class VotingArea extends Component {
     'cn': 'No fucking idea what the translation is :('
   };
 
-  showThankYouNote = (durationInMs = 3000) => {
+  showThankYouNote = (durationInMs = 500) => {
     this.setState({ ...this.state, showThankYou: true });
     setTimeout(() => {
       this.setState({ ...this.state, showThankYou: false });
